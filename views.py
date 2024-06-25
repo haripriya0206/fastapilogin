@@ -18,11 +18,11 @@ def get_db():
         db.close()
 
 @app.get('/')
-async def home( request : Request):
+def home( request : Request):
     return templates.TemplateResponse("loginpage.html", {"request":request})
 
 @app.post('/signin')
-async def login(request : Request , email : str = Form(...) , password : str = Form(...), db: Session = Depends(get_db)): 
+def login(request : Request , email : str = Form(...) , password : str = Form(...), db: Session = Depends(get_db)): 
             userdetails = db.query(models.Userdata).filter(models.Userdata.email == email).first()
             if userdetails is None :
                  message = [" User was not exists"]
@@ -36,14 +36,14 @@ async def login(request : Request , email : str = Form(...) , password : str = F
 
     
 @app.get('/register')
-async def get_register(request:Request):
+def get_register(request:Request):
      return templates.TemplateResponse("registerpage.html",{"request":request})    
 
 @app.post('/register')
-async def register(request : Request ,username : str = Form(...), email : str = Form(...) , password : str = Form(...), db: Session = Depends(get_db)):
+def register(request : Request ,username : str = Form(...), email : str = Form(...) , password : str = Form(...), db: Session = Depends(get_db)):
     form = UserCreateForm(request)
-    await form.load_data()
-    if await form.is_valid():
+    form.load_data()
+    if form.is_valid():
             total_row = db.query(models.Userdata).filter(models.Userdata.email == email).first()
             print(total_row)
             if total_row == None:
